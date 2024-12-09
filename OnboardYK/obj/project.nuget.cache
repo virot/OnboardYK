@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "HkF8gJtRVM8=",
+  "success": true,
+  "projectFilePath": "C:\\GIT\\OnboardYK\\OnboardYK\\OnboardYK.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\virot\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.1\\microsoft.extensions.logging.abstractions.7.0.1.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.10\\microsoft.net.illink.tasks.8.0.10.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\system.formats.cbor\\7.0.0\\system.formats.cbor.7.0.0.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\yubico.core\\1.11.0\\yubico.core.1.11.0.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\yubico.dotnetpolyfills\\1.11.0\\yubico.dotnetpolyfills.1.11.0.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\yubico.nativeshims\\1.10.0\\yubico.nativeshims.1.10.0.nupkg.sha512",
+    "C:\\Users\\virot\\.nuget\\packages\\yubico.yubikey\\1.11.0\\yubico.yubikey.1.11.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,3 @@
+C:\GIT\OnboardYK2\OnboardYK\bin\Release\net8.0-windows\publish\OnboardYK.pdb
+C:\GIT\OnboardYK2\OnboardYK\bin\Release\net8.0-windows\publish\Yubico.NativeShims.dll
+C:\GIT\OnboardYK2\OnboardYK\bin\Release\net8.0-windows\publish\OnboardYK.exe
