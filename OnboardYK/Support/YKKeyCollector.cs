@@ -60,6 +60,7 @@ namespace OnboardYK
                     break;
 
                 case KeyEntryRequest.TouchRequest:
+                    _form.UpdateStatusLabel("Please touch the YubiKey");
                     return false;
 
                 case KeyEntryRequest.VerifyPivPin:

@@ -450,24 +450,27 @@ namespace OnboardYK
             // 
             // comboBoxTouchPolicy
             // 
+            comboBoxTouchPolicy.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxTouchPolicy.FormattingEnabled = true;
+            comboBoxTouchPolicy.Items.AddRange(new object[] { PivTouchPolicy.None, PivTouchPolicy.Never, PivTouchPolicy.Always, PivTouchPolicy.Cached, PivTouchPolicy.Default });
             comboBoxTouchPolicy.Location = new Point(185, 47);
             comboBoxTouchPolicy.Name = "comboBoxTouchPolicy";
             comboBoxTouchPolicy.Size = new Size(121, 23);
             comboBoxTouchPolicy.TabIndex = 0;
-            comboBoxTouchPolicy.DataSource = Enum.GetValues(typeof(PivTouchPolicy));
             // 
             // comboBoxPinPolicy
             // 
+            comboBoxPinPolicy.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxPinPolicy.FormattingEnabled = true;
+            comboBoxPinPolicy.Items.AddRange(new object[] { PivPinPolicy.None, PivPinPolicy.Never, PivPinPolicy.Once, PivPinPolicy.Always, PivPinPolicy.MatchOnce, PivPinPolicy.MatchAlways, PivPinPolicy.Default });
             comboBoxPinPolicy.Location = new Point(42, 47);
             comboBoxPinPolicy.Name = "comboBoxPinPolicy";
             comboBoxPinPolicy.Size = new Size(121, 23);
             comboBoxPinPolicy.TabIndex = 0;
-            comboBoxPinPolicy.DataSource = Enum.GetValues(typeof(PivPinPolicy));
             // 
             // comboBoxAlgorithm
             // 
+            comboBoxAlgorithm.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxAlgorithm.FormattingEnabled = true;
             comboBoxAlgorithm.Location = new Point(185, 18);
             comboBoxAlgorithm.Name = "comboBoxAlgorithm";
@@ -476,15 +479,13 @@ namespace OnboardYK
             // 
             // comboBoxSlot
             // 
+            comboBoxSlot.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBoxSlot.FormattingEnabled = true;
+            comboBoxSlot.Items.AddRange(new object[] { "154", "156", "157", "158" });
             comboBoxSlot.Location = new Point(42, 18);
             comboBoxSlot.Name = "comboBoxSlot";
             comboBoxSlot.Size = new Size(121, 23);
             comboBoxSlot.TabIndex = 0;
-            // 
-            // profileModelBindingSource
-            // 
-            profileModelBindingSource.DataSource = typeof(Models.ProfileModel);
             // 
             // Form1
             // 
