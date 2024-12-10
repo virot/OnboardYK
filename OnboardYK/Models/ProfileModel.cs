@@ -10,7 +10,7 @@ using Yubico.YubiKey.Piv;
 namespace OnboardYK.Models
 {
     // Must be public due to XML serialization, otherwise 0x80131509 / System.InvalidOperationException
-    [XmlRoot(ElementName = "DataExport")]
+    [XmlRoot(ElementName = "OnboardYK")]
     public class ProfileModel
     {
         [XmlElement(ElementName = "ShowAllProfiles")]

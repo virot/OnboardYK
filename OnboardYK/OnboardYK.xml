@@ -1,4 +1,4 @@
-<DataExport
+<OnboardYK
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ShowAllProfiles>false</ShowAllProfiles>
@@ -22,4 +22,4 @@
     <CA>servername\CA Name</CA>
     <AlwaysVisible>false</AlwaysVisible>
   </Profile>
-</DataExport>
+</OnboardYK>

@@ -97,7 +97,7 @@ namespace OnboardYK
             statusStrip1.Location = new Point(0, 294);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Padding = new Padding(1, 0, 8, 0);
-            statusStrip1.Size = new Size(999, 22);
+            statusStrip1.Size = new Size(402, 22);
             statusStrip1.TabIndex = 3;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -346,7 +346,7 @@ namespace OnboardYK
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, advancedMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(999, 24);
+            menuStrip1.Size = new Size(402, 24);
             menuStrip1.TabIndex = 5;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -491,7 +491,7 @@ namespace OnboardYK
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(999, 316);
+            ClientSize = new Size(402, 316);
             Controls.Add(panel1);
             Controls.Add(tabYubikey);
             Controls.Add(statusStrip1);
