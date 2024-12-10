@@ -58,8 +58,8 @@ namespace OnboardYK
             label2 = new Label();
             labelPINGood = new Label();
             tabPage3 = new TabPage();
-            button2 = new Button();
-            button1 = new Button();
+            buttonCertRenew = new Button();
+            buttonCertNew = new Button();
             comboBoxProfiles = new ComboBox();
             label1 = new Label();
             menuStrip1 = new MenuStrip();
@@ -158,7 +158,7 @@ namespace OnboardYK
             textBoxCurrentPIN.Location = new Point(120, 35);
             textBoxCurrentPIN.MaxLength = 8;
             textBoxCurrentPIN.Name = "textBoxCurrentPIN";
-            textBoxCurrentPIN.PasswordChar = 'æ';
+            textBoxCurrentPIN.PasswordChar = '*';
             textBoxCurrentPIN.Size = new Size(200, 23);
             textBoxCurrentPIN.TabIndex = 2;
             // 
@@ -234,6 +234,7 @@ namespace OnboardYK
             // 
             textBoxPINConfirm.Location = new Point(140, 75);
             textBoxPINConfirm.Name = "textBoxPINConfirm";
+            textBoxPINConfirm.PasswordChar = '*';
             textBoxPINConfirm.Size = new Size(100, 23);
             textBoxPINConfirm.TabIndex = 6;
             // 
@@ -241,6 +242,7 @@ namespace OnboardYK
             // 
             textBoxPINNew.Location = new Point(138, 49);
             textBoxPINNew.Name = "textBoxPINNew";
+            textBoxPINNew.PasswordChar = '*';
             textBoxPINNew.Size = new Size(100, 23);
             textBoxPINNew.TabIndex = 5;
             // 
@@ -291,8 +293,8 @@ namespace OnboardYK
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(button2);
-            tabPage3.Controls.Add(button1);
+            tabPage3.Controls.Add(buttonCertRenew);
+            tabPage3.Controls.Add(buttonCertNew);
             tabPage3.Controls.Add(comboBoxProfiles);
             tabPage3.Controls.Add(label1);
             tabPage3.Location = new Point(4, 24);
@@ -303,23 +305,25 @@ namespace OnboardYK
             tabPage3.Text = "Certificate onboarding";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // buttonCertRenew
             // 
-            button2.Location = new Point(80, 92);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 3;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
+            buttonCertRenew.Location = new Point(80, 92);
+            buttonCertRenew.Name = "buttonCertRenew";
+            buttonCertRenew.Size = new Size(187, 23);
+            buttonCertRenew.TabIndex = 3;
+            buttonCertRenew.Text = "Renew certificate";
+            buttonCertRenew.UseVisualStyleBackColor = true;
+            buttonCertRenew.Click += buttonCertRenew_Click;
             // 
-            // button1
+            // buttonCertNew
             // 
-            button1.Location = new Point(80, 63);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 2;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            buttonCertNew.Location = new Point(80, 63);
+            buttonCertNew.Name = "buttonCertNew";
+            buttonCertNew.Size = new Size(187, 23);
+            buttonCertNew.TabIndex = 2;
+            buttonCertNew.Text = "New private key and certificate";
+            buttonCertNew.UseVisualStyleBackColor = true;
+            buttonCertNew.Click += buttonCertNew_Click;
             // 
             // comboBoxProfiles
             // 
@@ -337,9 +341,9 @@ namespace OnboardYK
             label1.AutoSize = true;
             label1.Location = new Point(23, 24);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(44, 15);
             label1.TabIndex = 0;
-            label1.Text = "label1";
+            label1.Text = "Profile:";
             // 
             // menuStrip1
             // 
@@ -550,8 +554,8 @@ namespace OnboardYK
         private ToolStripMenuItem advancedMenuItem;
         private ToolStripMenuItem resetYubikeyPIVToolStripMenuItem1;
         private ToolStripMenuItem unlockProfilesMenuItem;
-        private Button button2;
-        private Button button1;
+        private Button buttonCertRenew;
+        private Button buttonCertNew;
         private ComboBox comboBoxProfiles;
         private Label label1;
         private Panel panel1;

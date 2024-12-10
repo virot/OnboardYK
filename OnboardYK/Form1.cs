@@ -3,6 +3,7 @@ using OnboardYK.Support;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using Yubico.YubiKey;
 using Yubico.YubiKey.Piv;
@@ -113,6 +114,7 @@ namespace OnboardYK
             {
                 _yubiKeyDevice = (YubiKeyDevice?)YubiKeyDevice.FindAll().First(yk => yk.SerialNumber == ((YubiKeyDeviceItem)comboBoxYubikey.SelectedItem!).SerialNumber);
                 buttonValidatePIN.Enabled = true;
+                _currentPIN = null;
                 textBoxCurrentPIN.Text = "";
                 textBoxCurrentPIN.Enabled = true;
             }
@@ -161,6 +163,10 @@ namespace OnboardYK
                 {
                     comboBoxProfiles.Items.Remove(profile);
                 }
+            }
+            if (comboBoxProfiles.Items.Count == 1)
+            {
+                comboBoxProfiles.SelectedIndex = 0;
             }
         }
 
@@ -228,7 +234,19 @@ namespace OnboardYK
         {
             if (MessageBox.Show("Are you sure you want reset the PIV on this YubiKey?", "Reset YubiKey PIV", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                MessageBox.Show("Not implemented yet.", "Not implmented", MessageBoxButtons.OKCancel);
+                using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
+                {
+                    pivSession.ResetApplication();
+                    buttonValidatePIN.Enabled = true;
+                    if (_currentPIN is not null)
+                    {
+                        _currentPIN = null;
+                    }
+                    textBoxCurrentPIN.Text = "";
+                    textBoxCurrentPIN.Enabled = true;
+                    tabYubikey.SelectTab(tabPage1);
+
+                }
             }
         }
 
@@ -245,8 +263,8 @@ namespace OnboardYK
                         pivSession.ChangePinAndPukRetryCounts(0x8, 0x3);
                         _newPIN = _currentPIN;
                         _currentPIN = new NetworkCredential("", "123456").SecurePassword;
-                        MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_currentPIN!))}", "CurrentPIN", MessageBoxButtons.OKCancel);
-                        MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_newPIN!))}", "NewPIN", MessageBoxButtons.OKCancel);
+                        //MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_currentPIN!))}", "CurrentPIN", MessageBoxButtons.OKCancel);
+                        //MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_newPIN!))}", "NewPIN", MessageBoxButtons.OKCancel);
                         pivSession.ChangePin();
                         _currentPIN = _newPIN;
                         _newPIN = null;
@@ -319,5 +337,57 @@ namespace OnboardYK
             MessageBox.Show(xmloutput, "Profile", MessageBoxButtons.OKCancel);
         }
 
+        private void buttonCertNew_Click(object sender, EventArgs e)
+        {
+            if (comboBoxSlot.Text.Length >= 2)
+            { }
+            else
+            {
+                MessageBox.Show("Slot must be selected", "No slot selected", MessageBoxButtons.OK);
+                return;
+            }
+            using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
+            {
+                pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
+                var publickey = pivSession.GenerateKeyPair(slotNumber:
+                    byte.Parse((string)comboBoxSlot.SelectedItem!),
+                    algorithm: (PivAlgorithm)comboBoxAlgorithm.SelectedItem!,
+                    pinPolicy: (PivPinPolicy)comboBoxPinPolicy.SelectedItem!,
+                    touchPolicy: (PivTouchPolicy)comboBoxTouchPolicy.SelectedItem!
+                );
+            }
+
+            buttonCertRenew_Click(sender, e);
+        }
+
+        private void buttonCertRenew_Click(object sender, EventArgs e)
+        {
+            if (comboBoxSlot.Text.Length >= 2)
+            { }
+            else
+            {
+                MessageBox.Show("Slot must be selected", "No slot selected", MessageBoxButtons.OK);
+                return;
+            }
+
+            using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
+            {
+                pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
+                PivPublicKey? publicKey;
+                try
+                {
+                    publicKey = pivSession.GetMetadata(byte.Parse((string)comboBoxSlot.SelectedItem!)).PublicKey;
+                }
+                catch
+                {
+                    MessageBox.Show("No public key found in slot", "No public key", MessageBoxButtons.OK);
+                    return;
+                }
+
+                MessageBox.Show("Not implemented yet.", "Not implmented", MessageBoxButtons.OK);
+            }
+
+            CertificateManagement.RequestCertificate(slot: byte.Parse((string)comboBoxSlot.SelectedItem!), template: textBoxTemplate.Text, certificateAuthority: textBoxCA.Text, yubiKeyDevice: _yubiKeyDevice!, yKKeyCollector: _ykKeyCollector);
+        }
     }
 }

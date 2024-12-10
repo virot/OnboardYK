@@ -22,6 +22,8 @@ namespace OnboardYK
                 return false;
             }
 
+            //MessageBox.Show($"This time it is: {keyEntryData.Request}, and retry is: {keyEntryData.IsRetry}","YKKeyCollectorDelegate");
+
             if (keyEntryData.IsRetry)
             {
                 switch (keyEntryData.Request)
@@ -32,6 +34,11 @@ namespace OnboardYK
                     case KeyEntryRequest.AuthenticatePivManagementKey:
                         _form.UpdateStatusLabel($"Incorrect PIV Managemwent Key", Color.Red);
                         break;
+
+                    case KeyEntryRequest.TouchRequest:
+                        _form.UpdateStatusLabel("Please touch the YubiKey");
+                        break;
+
                     case KeyEntryRequest.VerifyPivPin:
                         if (!(keyEntryData.RetriesRemaining is null))
                         {
@@ -58,10 +65,6 @@ namespace OnboardYK
 
                 case KeyEntryRequest.Release:
                     break;
-
-                case KeyEntryRequest.TouchRequest:
-                    _form.UpdateStatusLabel("Please touch the YubiKey");
-                    return false;
 
                 case KeyEntryRequest.VerifyPivPin:
                     currentValue = System.Text.Encoding.UTF8.GetBytes(Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_form._currentPIN!))!);
