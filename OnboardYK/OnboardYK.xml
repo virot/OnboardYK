@@ -1,0 +1,25 @@
+<DataExport
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ShowAllProfiles>false</ShowAllProfiles>
+  <Profile>
+    <Name>Regular</Name>
+    <Slot>154</Slot>
+    <Algorithm>Rsa2048</Algorithm>
+    <PinPolicy>Once</PinPolicy>
+    <TouchPolicy>Never</TouchPolicy>
+    <Template>YubikeySmartcard</Template>
+    <CA>servername\CA Name</CA>
+    <AlwaysVisible>true</AlwaysVisible>
+  </Profile>
+  <Profile>
+    <Name>Admin</Name>
+    <Slot>157</Slot>
+    <Algorithm>Rsa2048</Algorithm>
+    <PinPolicy>Once</PinPolicy>
+    <TouchPolicy>Cached</TouchPolicy>
+    <Template>YubikeySmartcard2</Template>
+    <CA>servername\CA Name</CA>
+    <AlwaysVisible>false</AlwaysVisible>
+  </Profile>
+</DataExport>

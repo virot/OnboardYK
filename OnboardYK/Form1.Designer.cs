@@ -36,6 +36,7 @@ namespace OnboardYK
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             tabYubikey = new TabControl();
@@ -59,7 +60,7 @@ namespace OnboardYK
             tabPage3 = new TabPage();
             button2 = new Button();
             button1 = new Button();
-            comboBox1 = new ComboBox();
+            comboBoxProfiles = new ComboBox();
             label1 = new Label();
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -72,11 +73,13 @@ namespace OnboardYK
             panel1 = new Panel();
             textBoxTemplate = new TextBox();
             buttonGenerateXML = new Button();
+            textBoxName = new TextBox();
             textBoxCA = new TextBox();
             comboBoxTouchPolicy = new ComboBox();
             comboBoxPinPolicy = new ComboBox();
             comboBoxAlgorithm = new ComboBox();
             comboBoxSlot = new ComboBox();
+            profileModelBindingSource = new BindingSource(components);
             statusStrip1.SuspendLayout();
             tabYubikey.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -84,6 +87,7 @@ namespace OnboardYK
             tabPage3.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)profileModelBindingSource).BeginInit();
             SuspendLayout();
             // 
             // statusStrip1
@@ -289,7 +293,7 @@ namespace OnboardYK
             // 
             tabPage3.Controls.Add(button2);
             tabPage3.Controls.Add(button1);
-            tabPage3.Controls.Add(comboBox1);
+            tabPage3.Controls.Add(comboBoxProfiles);
             tabPage3.Controls.Add(label1);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
@@ -317,13 +321,16 @@ namespace OnboardYK
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             // 
-            // comboBox1
+            // comboBoxProfiles
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(80, 21);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(121, 23);
-            comboBox1.TabIndex = 1;
+            comboBoxProfiles.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxProfiles.FormattingEnabled = true;
+            comboBoxProfiles.Location = new Point(80, 21);
+            comboBoxProfiles.Name = "comboBoxProfiles";
+            comboBoxProfiles.Size = new Size(121, 23);
+            comboBoxProfiles.TabIndex = 1;
+            comboBoxProfiles.DropDown += comboBoxProfiles_updateList;
+            comboBoxProfiles.SelectedIndexChanged += comboBoxProfiles_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -396,6 +403,7 @@ namespace OnboardYK
             // 
             panel1.Controls.Add(textBoxTemplate);
             panel1.Controls.Add(buttonGenerateXML);
+            panel1.Controls.Add(textBoxName);
             panel1.Controls.Add(textBoxCA);
             panel1.Controls.Add(comboBoxTouchPolicy);
             panel1.Controls.Add(comboBoxPinPolicy);
@@ -408,14 +416,15 @@ namespace OnboardYK
             // 
             // textBoxTemplate
             // 
-            textBoxTemplate.Location = new Point(131, 163);
+            textBoxTemplate.Location = new Point(185, 76);
             textBoxTemplate.Name = "textBoxTemplate";
             textBoxTemplate.Size = new Size(100, 23);
             textBoxTemplate.TabIndex = 1;
+            textBoxTemplate.Text = "Templatename";
             // 
             // buttonGenerateXML
             // 
-            buttonGenerateXML.Location = new Point(131, 192);
+            buttonGenerateXML.Location = new Point(245, 194);
             buttonGenerateXML.Name = "buttonGenerateXML";
             buttonGenerateXML.Size = new Size(75, 23);
             buttonGenerateXML.TabIndex = 2;
@@ -423,34 +432,44 @@ namespace OnboardYK
             buttonGenerateXML.UseVisualStyleBackColor = true;
             buttonGenerateXML.Click += button3_Click;
             // 
+            // textBoxName
+            // 
+            textBoxName.Location = new Point(42, 76);
+            textBoxName.Name = "textBoxName";
+            textBoxName.Size = new Size(100, 23);
+            textBoxName.TabIndex = 1;
+            textBoxName.Text = "Policy Name";
+            // 
             // textBoxCA
             // 
-            textBoxCA.Location = new Point(131, 134);
+            textBoxCA.Location = new Point(42, 105);
             textBoxCA.Name = "textBoxCA";
-            textBoxCA.Size = new Size(100, 23);
+            textBoxCA.Size = new Size(264, 23);
             textBoxCA.TabIndex = 1;
+            textBoxCA.Text = "CA Server in \"<Servername>\\<CA name>\" format";
             // 
             // comboBoxTouchPolicy
             // 
             comboBoxTouchPolicy.FormattingEnabled = true;
-            comboBoxTouchPolicy.Location = new Point(131, 105);
+            comboBoxTouchPolicy.Location = new Point(185, 47);
             comboBoxTouchPolicy.Name = "comboBoxTouchPolicy";
             comboBoxTouchPolicy.Size = new Size(121, 23);
             comboBoxTouchPolicy.TabIndex = 0;
+            comboBoxTouchPolicy.DataSource = Enum.GetValues(typeof(PivTouchPolicy));
             // 
             // comboBoxPinPolicy
             // 
             comboBoxPinPolicy.FormattingEnabled = true;
-            comboBoxPinPolicy.Location = new Point(131, 76);
+            comboBoxPinPolicy.Location = new Point(42, 47);
             comboBoxPinPolicy.Name = "comboBoxPinPolicy";
             comboBoxPinPolicy.Size = new Size(121, 23);
             comboBoxPinPolicy.TabIndex = 0;
-            comboBoxPinPolicy.Items.AddRange(new object[] { new YubiKeyPINPolicyItem(PivPinPolicy.None), new YubiKeyPINPolicyItem(PivPinPolicy.Always), new YubiKeyPINPolicyItem(PivPinPolicy.Once), new YubiKeyPINPolicyItem(PivPinPolicy.MatchOnce) });
+            comboBoxPinPolicy.DataSource = Enum.GetValues(typeof(PivPinPolicy));
             // 
             // comboBoxAlgorithm
             // 
             comboBoxAlgorithm.FormattingEnabled = true;
-            comboBoxAlgorithm.Location = new Point(131, 47);
+            comboBoxAlgorithm.Location = new Point(185, 18);
             comboBoxAlgorithm.Name = "comboBoxAlgorithm";
             comboBoxAlgorithm.Size = new Size(121, 23);
             comboBoxAlgorithm.TabIndex = 0;
@@ -458,10 +477,14 @@ namespace OnboardYK
             // comboBoxSlot
             // 
             comboBoxSlot.FormattingEnabled = true;
-            comboBoxSlot.Location = new Point(131, 18);
+            comboBoxSlot.Location = new Point(42, 18);
             comboBoxSlot.Name = "comboBoxSlot";
             comboBoxSlot.Size = new Size(121, 23);
             comboBoxSlot.TabIndex = 0;
+            // 
+            // profileModelBindingSource
+            // 
+            profileModelBindingSource.DataSource = typeof(Models.ProfileModel);
             // 
             // Form1
             // 
@@ -491,6 +514,7 @@ namespace OnboardYK
             menuStrip1.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)profileModelBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -527,7 +551,7 @@ namespace OnboardYK
         private ToolStripMenuItem unlockProfilesMenuItem;
         private Button button2;
         private Button button1;
-        private ComboBox comboBox1;
+        private ComboBox comboBoxProfiles;
         private Label label1;
         private Panel panel1;
         private TextBox textBoxTemplate;
@@ -537,6 +561,8 @@ namespace OnboardYK
         private ComboBox comboBoxAlgorithm;
         private ComboBox comboBoxSlot;
         private Button buttonGenerateXML;
+        private TextBox textBoxName;
+        private BindingSource profileModelBindingSource;
     }
 
 

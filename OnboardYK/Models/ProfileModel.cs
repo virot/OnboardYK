@@ -20,8 +20,10 @@ namespace OnboardYK.Models
 
         public class Profile
         {
-            [XmlElement(ElementName = "Slot")] 
-            public byte Slot{ get; set; } = 0x9A;
+            [XmlElement(ElementName = "Name")]
+            public string Name { get; set; } = String.Empty;
+            [XmlElement(ElementName = "Slot")]
+            public byte Slot { get; set; } = 0x9A;
             [XmlElement(ElementName = "Algorithm")]
             public PivAlgorithm Algorithm { get; set; } = PivAlgorithm.Rsa2048;
             [XmlElement(ElementName = "PinPolicy")]

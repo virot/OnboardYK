@@ -15,17 +15,48 @@ namespace OnboardYK
         public SecureString? _currentPIN;
         public SecureString? _newPIN;
         public YKKeyCollector _ykKeyCollector;
+        public ProfileModel _profileModel;
         public byte[]? _pivManagementKey = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
 
         public Form1()
         {
             InitializeComponent();
             _ykKeyCollector = new YKKeyCollector(form: this);
+
+            /*comboBoxTouchPolicy.Items.AddRange(new Object[]
+            {
+                new YubiKeyTouchPolicyItem(PivTouchPolicy.Never),
+                new YubiKeyTouchPolicyItem(PivTouchPolicy.Always),
+                new YubiKeyTouchPolicyItem(PivTouchPolicy.Cached),
+            });
+            
+            comboBoxPinPolicy.Items.AddRange(new Object[]
+            {
+                new YubiKeyPINPolicyItem(PivPinPolicy.Always),
+                new YubiKeyPINPolicyItem(PivPinPolicy.Never),
+                new YubiKeyPINPolicyItem(PivPinPolicy.Once),
+                new YubiKeyPINPolicyItem(PivPinPolicy.MatchAlways),
+                new YubiKeyPINPolicyItem(PivPinPolicy.MatchOnce)
+            });
+            */
+
+            // Load the profiles
+            string fileName = "OnboardYK.xml";
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"The file {fileName} was not found in the application directory.");
+            }
+
+            _profileModel = ProfileModel.LoadFromFile(filePath);
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             comboBoxYubikey_updateList(sender, e);
+            comboBoxProfiles_updateList(sender, e);
         }
 
         private void advancedMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -107,6 +138,43 @@ namespace OnboardYK
             }
 
         }
+        private void comboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_profileModel.Profiles is not null && comboBoxProfiles.SelectedItem is not null)
+            {
+                ProfileModel.Profile selectedProfile = _profileModel.Profiles.First(profile => profile.Name == (string)comboBoxProfiles.SelectedItem);
+                textBoxName.Text = selectedProfile.Name;
+                textBoxTemplate.Text = selectedProfile.Template;
+                textBoxCA.Text = selectedProfile.CA;
+                comboBoxTouchPolicy.SelectedItem = selectedProfile.TouchPolicy;
+                comboBoxPinPolicy.SelectedItem = selectedProfile.PinPolicy;
+            }
+        }
+        private void comboBoxProfiles_updateList(object sender, EventArgs e)
+        {
+            bool showAll = ((Control.ModifierKeys & Keys.Shift) == (Keys.Shift) || _profileModel.ShowAllProfiles == true);
+            List<String> visibleProfiles = new List<String>();
+            if (_profileModel.Profiles is not null)
+            {
+                visibleProfiles = _profileModel.Profiles.Where(visible => visible.AlwaysVisible == true || showAll).Select(profile => profile.Name).ToList();
+            }
+
+            foreach (String profile in visibleProfiles)
+            {
+                if (!comboBoxProfiles.Items.Contains(profile))
+                {
+                    comboBoxProfiles.Items.Add(profile);
+                }
+            }
+            foreach (String profile in comboBoxProfiles.Items)
+            {
+                if (!visibleProfiles.Contains(profile))
+                {
+                    comboBoxProfiles.Items.Remove(profile);
+                }
+            }
+        }
+            
         public void UpdateStatusLabel(string message, Color? backgroundColor = null)
         {
             if (backgroundColor is not null)
@@ -162,7 +230,7 @@ namespace OnboardYK
         {
             if ((e.TabPage == tabPage2 || e.TabPage == tabPage3) && _currentPIN is null)
             {
-                e.Cancel = true; // Cancel the selection of tabPage2
+                //e.Cancel = true; // Cancel the selection of tabPage2
                 UpdateStatusLabel("Please verify PIN before switching pages.");
             }
         }
@@ -250,10 +318,11 @@ namespace OnboardYK
                 {
                     Slot = 0x9A,
                     Algorithm = PivAlgorithm.Rsa2048,
-                    PinPolicy = ((YubiKeyPINPolicyItem)comboBoxPinPolicy.SelectedItem! ?? new YubiKeyPINPolicyItem(PivPinPolicy.Default)).PivPinPolicy,
-                    TouchPolicy = PivTouchPolicy.Default,
-                    Template = textBoxCA.Text,
+                    PinPolicy = (PivPinPolicy)comboBoxPinPolicy.SelectedItem!,
+                    TouchPolicy = (PivTouchPolicy)comboBoxTouchPolicy.SelectedItem!,
+                    Template = textBoxTemplate.Text,
                     CA = textBoxCA.Text,
+                    Name = textBoxName.Text,
                     AlwaysVisible = true
                 }
             };
