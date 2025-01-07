@@ -71,7 +71,7 @@ jobs:
       id: set-asset-name
       run: |
         date=$(date +'%Y-%m-%d')
-        echo "zipfilename=TameMyCerts_community_${date}.zip" >> $GITHUB_ENV
+        echo "zipfilename=OnboardYK_${date}.zip" >> $GITHUB_ENV
 
     - name: Trigger target workflow
       run: |
