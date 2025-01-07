@@ -1,7 +1,11 @@
 name: Trigger weekly build
 
 on:
-  workflow_dispatch:  
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
   
 jobs:
   Triggerweeklybuild:
