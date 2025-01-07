@@ -1,0 +1,82 @@
+name: Trigger weekly build
+
+on:
+  workflow_dispatch:  
+  
+jobs:
+  Triggerweeklybuild:
+    runs-on: ubuntu-latest
+    env:
+       GH_TOKEN: ${{ github.token }}
+       GH_REPO: ${{ github.repository }}
+       WF_NAME: "latest-build" 
+
+    steps:
+
+    - name: Check if weekly-build release exists
+      id: check-release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        existing_release=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.WF_NAME }} \
+        | jq -r '.id')
+        if [ "$existing_release" != "null" ]; then
+          echo "release_exists=true" >> $GITHUB_ENV
+        else
+          echo "release_exists=false" >> $GITHUB_ENV
+        fi
+        
+    - name: Delete existing "weekly-build" release
+      id: delete-release
+      if: ${{ env.status == 'success' && env.release_exists == 'true' }} 
+      run: |
+        existing_release=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.WF_NAME }} \
+        | jq -r '.id')
+        if [ "$existing_release" != "null" ]; then
+          curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/$existing_release
+        fi
+
+    - name: Delete existing "weekly-build" tag
+      id: delete-tag
+      if: ${{ steps.delete-release.outcome == 'success' }}
+      run: |
+        curl -s -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/git/refs/tags/${{ env.WF_NAME }}
+
+    - name: Create new "weekly-build" release
+      if: ${{ steps.delete-release.outcome == 'success' || env.release_exists == 'false' }}
+      run: |
+        current_date=$(date +'%Y-%m-%d')
+        status=$(curl -s -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -d '{
+          "tag_name": "${{ env.WF_NAME }}",
+          "target_commitish": "main",
+          "name": "Latest build",
+          "body": "Auto-generated latest built on '"$current_date"'",
+          "draft": false,
+          "prerelease": true
+        }' https://api.github.com/repos/${{ github.repository }}/releases)
+        upload_url=$(echo $status | jq -r '.upload_url')
+        echo "upload_url=$upload_url" >> $GITHUB_ENV
+        echo $status
+
+    - name: Set Asset Name
+      id: set-asset-name
+      run: |
+        date=$(date +'%Y-%m-%d')
+        echo "zipfilename=TameMyCerts_community_${date}.zip" >> $GITHUB_ENV
+
+    - name: Trigger target workflow
+      run: |
+        curl -X POST -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/actions/workflows/uploadreleasefile.yml/dispatches \
+        -d '{"ref":"main","inputs":{"upload_url":"${{ env.upload_url }}","zipfilename":"${{ env.zipfilename }}","versiontag":"${{ env.WF_NAME }}"}}'
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Complete the weekly build process
+      run: echo "Latest build completed!"

@@ -4,6 +4,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Windows.Forms;
 using Yubico.YubiKey;
 using Yubico.YubiKey.Piv;
@@ -348,7 +349,22 @@ namespace OnboardYK
             }
             using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
             {
+                byte slot = byte.Parse((string)comboBoxSlot.SelectedItem!);
                 pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
+
+                try
+                {
+                    X509Certificate2 certificate = pivSession.GetCertificate(slot);
+                    if (MessageBox.Show(text: $"There already exists a certificate in the slot 0x{slot.ToString("X2")} issued to {certificate.Subject}, do you want to overwrite it?", caption: $"Certificate exists in slot 0x{slot.ToString("X2")}", buttons: MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        UpdateStatusLabel("Certificate already exists aborting");
+                        return;
+                    }
+                }
+                catch
+                {
+                }
+                UpdateStatusLabel("Starting to generate new private key");
                 var publickey = pivSession.GenerateKeyPair(slotNumber:
                     byte.Parse((string)comboBoxSlot.SelectedItem!),
                     algorithm: (PivAlgorithm)comboBoxAlgorithm.SelectedItem!,
@@ -362,6 +378,10 @@ namespace OnboardYK
 
         private void buttonCertRenew_Click(object sender, EventArgs e)
         {
+            string csrPemData;
+            X509Certificate2 certificate;
+
+
             if (comboBoxSlot.Text.Length >= 2)
             { }
             else
@@ -370,6 +390,7 @@ namespace OnboardYK
                 return;
             }
 
+            byte slot = byte.Parse((string)comboBoxSlot.SelectedItem!);
             using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
             {
                 pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
@@ -380,14 +401,49 @@ namespace OnboardYK
                 }
                 catch
                 {
-                    MessageBox.Show("No public key found in slot", "No public key", MessageBoxButtons.OK);
+                    MessageBox.Show($"No public key found in slot {slot.ToString("X2")}", "No public key", MessageBoxButtons.OK);
+                    UpdateStatusLabel($"No public key found slot {slot.ToString("X2")}, unable to enroll", Control.DefaultBackColor);
                     return;
                 }
-
-                MessageBox.Show("Not implemented yet.", "Not implmented", MessageBoxButtons.OK);
             }
 
-            CertificateManagement.RequestCertificate(slot: byte.Parse((string)comboBoxSlot.SelectedItem!), template: textBoxTemplate.Text, certificateAuthority: textBoxCA.Text, yubiKeyDevice: _yubiKeyDevice!, yKKeyCollector: _ykKeyCollector);
+            try
+            {
+                UpdateStatusLabel("Please press YubiKey if it starts to blink", Color.Yellow);
+                csrPemData = CertificateManagement.GenerateCertificateSigningRequest(slot: slot, yubiKeyDevice: _yubiKeyDevice!, yKKeyCollector: _ykKeyCollector);
+                UpdateStatusLabel("Certificate Signing Request created", Control.DefaultBackColor);
+            }
+            catch
+            {
+                UpdateStatusLabel("Failed to generate CSR", Color.Red);
+                MessageBox.Show("Failed to generate CSR", "Failed to generate CSR", MessageBoxButtons.OK);
+                return;
+            }
+            try
+            {
+                string certificateAuthority = textBoxCA.Text;
+                string template = textBoxTemplate.Text;
+                string response = CertificateManagement.SubmitRequest(caServer: certificateAuthority, csr: csrPemData, template: template);
+                certificate = new X509Certificate2(Encoding.ASCII.GetBytes(response));
+                UpdateStatusLabel("Certificate has been signed by the Certificate Authority", Control.DefaultBackColor);
+            }
+            catch
+            {
+                UpdateStatusLabel("Failed to generate CSR", Color.Red);
+                MessageBox.Show("Failed to generate CSR", "Failed to generate CSR", MessageBoxButtons.OK);
+                return;
+            }
+            try
+            {
+                CertificateManagement.InstallCertificate(slot: slot, certificate: certificate, yubiKeyDevice: _yubiKeyDevice!, yKKeyCollector: _ykKeyCollector);
+                UpdateStatusLabel("Certificate has been installed into the YubiKey");
+            }
+            catch
+            {
+                UpdateStatusLabel("Failed install the Certificate", Color.Red);
+                MessageBox.Show(text: "Failed to install the certificate", caption: "Failed to install the certificate", buttons: MessageBoxButtons.OK);
+                return;
+            }
         }
     }
 }

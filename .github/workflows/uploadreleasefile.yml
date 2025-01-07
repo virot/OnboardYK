@@ -1,0 +1,66 @@
+name: Upload release file
+on:
+  workflow_dispatch:
+    inputs:
+      upload_url:
+        description: "Upload URL"
+        required: true
+      zipfilename:
+        description: "Name of the ZIP file"
+        required: true
+      versiontag:
+        description: "Tag of the release"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and upload module
+    runs-on: windows-latest
+
+    env:
+      upload_url: ${{ github.event.inputs.upload_url }}
+      zipfilename: ${{ github.event.inputs.zipfilename }}
+      versiontag: ${{ github.event.inputs.versiontag }}
+
+    steps:
+
+    - uses: actions/checkout@v4
+      with:
+        ref: "refs/tags/${{ env.versiontag }}"
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install dependencies OnboardYK
+      run: dotnet restore
+
+    - name: Setup MSBuild Path
+      uses: microsoft/setup-msbuild@v1.3
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    - name: Build release
+      run: msbuild -property:DeployOnBuild=true -property:PublishProfile=FolderProfile -property:PublishDir=..\release /t:publish -property:RuntimeIdentifier=win-x64 -property:TargetFramework=net8.0-windows
+
+    - name: Create ZIP file
+      run: |
+        Add-Type -AssemblyName 'System.IO.Compression.FileSystem'
+        [System.IO.Compression.ZipFile]::CreateFromDirectory("release", "release.zip", [System.IO.Compression.CompressionLevel]::SmallestSize, $false)
+        Write-Host "ZIP file created successfully at $zipFilePath"
+      shell: pwsh
+
+    - name: Upload Release Assets
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.upload_url }}
+        asset_path: release.zip
+        asset_name: ${{ env.zipfilename }}
+        asset_content_type: application/zip

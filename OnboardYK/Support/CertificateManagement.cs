@@ -12,25 +12,38 @@ namespace OnboardYK.Support
     {
         internal static void RequestCertificate(byte slot, string template, string certificateAuthority, YubiKeyDevice yubiKeyDevice, YKKeyCollector yKKeyCollector)
         {
+        }
+
+        internal static void InstallCertificate(byte slot, X509Certificate2 certificate, YubiKeyDevice yubiKeyDevice, YKKeyCollector yKKeyCollector)
+        {
+            using (var pivSession = new PivSession((YubiKeyDevice)yubiKeyDevice!))
+            {
+                pivSession.KeyCollector = yKKeyCollector.YKKeyCollectorDelegate;
+                pivSession.ImportCertificate(slot, certificate);
+            }
+        }
+        internal static string GenerateCertificateSigningRequest(byte slot, YubiKeyDevice yubiKeyDevice, YKKeyCollector yKKeyCollector)
+        {
             CertificateRequest request;
             X509SignatureGenerator signer;
             X500DistinguishedName Subjectname = new X500DistinguishedName("CN=OnboardYK");
             HashAlgorithmName hashAlgorithmName = HashAlgorithmName.SHA256;
+            string pemData;
 
             using (var pivSession = new PivSession((YubiKeyDevice)yubiKeyDevice!))
             {
                 pivSession.KeyCollector = yKKeyCollector.YKKeyCollectorDelegate;
                 PivPublicKey? publicKey;
-            try
-            {
-                publicKey = pivSession.GetMetadata(slot).PublicKey;
-            }
-            catch
-            {
-                    return;
-            }
+                try
+                {
+                    publicKey = pivSession.GetMetadata(slot).PublicKey;
+                }
+                catch
+                {
+                    throw new Exception("Failed to get public key");
+                }
 
-            using AsymmetricAlgorithm dotNetPublicKey = KeyConverter.GetDotNetFromPivPublicKey(publicKey);
+                using AsymmetricAlgorithm dotNetPublicKey = KeyConverter.GetDotNetFromPivPublicKey(publicKey);
 
                 if (publicKey is PivRsaPublicKey)
                 {
@@ -54,7 +67,7 @@ namespace OnboardYK.Support
                 Oid oidSlotAttestation = new Oid("1.3.6.1.4.1.41482.3.11");
                 request.CertificateExtensions.Add(new X509Extension(oidSlotAttestation, slotAttestationCertificateBytes, false));
                 request.CertificateExtensions.Add(new X509Extension(oidIntermediate, yubikeyIntermediateAttestationCertificateBytes, false));
-                
+
                 if (publicKey is PivRsaPublicKey)
                 {
                     signer = new YubiKeySignatureGenerator(pivSession, slot, publicKey, RSASignaturePaddingMode.Pss);
@@ -65,13 +78,9 @@ namespace OnboardYK.Support
                 }
 
                 byte[] requestSigned = request.CreateSigningRequest(signer);
-                string pemData = PemEncoding.WriteString("CERTIFICATE REQUEST", requestSigned);
-                string response = SubmitRequest(certificateAuthority, pemData, template);
-
-                X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(response));
-                pivSession.ImportCertificate(slot, certificate);
-
+                pemData = PemEncoding.WriteString("CERTIFICATE REQUEST", requestSigned);
             }
+            return pemData;
         }
 
         public static string SubmitRequest(string caServer, string csr, string template)

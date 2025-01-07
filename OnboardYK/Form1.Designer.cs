@@ -309,9 +309,9 @@ namespace OnboardYK
             // 
             buttonCertRenew.Location = new Point(80, 92);
             buttonCertRenew.Name = "buttonCertRenew";
-            buttonCertRenew.Size = new Size(187, 23);
+            buttonCertRenew.Size = new Size(245, 23);
             buttonCertRenew.TabIndex = 3;
-            buttonCertRenew.Text = "Renew certificate";
+            buttonCertRenew.Text = "Reuse private key and get new certificate";
             buttonCertRenew.UseVisualStyleBackColor = true;
             buttonCertRenew.Click += buttonCertRenew_Click;
             // 
@@ -319,7 +319,7 @@ namespace OnboardYK
             // 
             buttonCertNew.Location = new Point(80, 63);
             buttonCertNew.Name = "buttonCertNew";
-            buttonCertNew.Size = new Size(187, 23);
+            buttonCertNew.Size = new Size(230, 23);
             buttonCertNew.TabIndex = 2;
             buttonCertNew.Text = "New private key and certificate";
             buttonCertNew.UseVisualStyleBackColor = true;
