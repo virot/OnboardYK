@@ -37,7 +37,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Install dependencies OnboardYK
-      run: dotnet restore
+      run: dotnet restore --runtime win-x64
 
     - name: Setup MSBuild Path
       uses: microsoft/setup-msbuild@v1.3
