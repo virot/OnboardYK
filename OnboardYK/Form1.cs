@@ -200,24 +200,31 @@ namespace OnboardYK
                 pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
                 if (_currentPIN is not null)
                 {
-                    if (pivSession.TryVerifyPin() == true)
+                    try
                     {
-                        toolStripStatusLabel1.Text = "PIN verified";
+                        if (pivSession.TryVerifyPin() == true)
+                        {
+                            toolStripStatusLabel1.Text = "PIN verified";
 
-                        // Success
-                        buttonValidatePIN.Enabled = false;
-                        textBoxCurrentPIN.Text = "";
-                        textBoxCurrentPIN.Enabled = false;
-                        tabYubikey.SelectTab(tabPage2);
+                            // Success
+                            buttonValidatePIN.Enabled = false;
+                            textBoxCurrentPIN.Text = "";
+                            textBoxCurrentPIN.Enabled = false;
+                            tabYubikey.SelectTab(tabPage2);
 
-                        int pinRetries = pivSession.GetMetadata(PivSlot.Pin).RetryCount;
-                        int pukRetries = pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining;
-                        textBoxPINPUKCount.Text = $"{pinRetries} / {pukRetries}";
+                            int pinRetries = pivSession.GetMetadata(PivSlot.Pin).RetryCount;
+                            int pukRetries = pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining;
+                            textBoxPINPUKCount.Text = $"{pinRetries} / {pukRetries}";
+                        }
+                        else
+                        {
+                            textBoxCurrentPIN.Text = "";
+                            _currentPIN.Clear();
+                        }
                     }
-                    else
+                    catch (Exception err)
                     {
-                        textBoxCurrentPIN.Text = "";
-                        _currentPIN.Clear();
+                        UpdateStatusLabel($"Failed to verify PIN, '{err.Message}'",Color.Red);
                     }
                 }
             }
@@ -264,8 +271,6 @@ namespace OnboardYK
                         pivSession.ChangePinAndPukRetryCounts(0x8, 0x3);
                         _newPIN = _currentPIN;
                         _currentPIN = new NetworkCredential("", "123456").SecurePassword;
-                        //MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_currentPIN!))}", "CurrentPIN", MessageBoxButtons.OKCancel);
-                        //MessageBox.Show($"Not implemented yet. {Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(_newPIN!))}", "NewPIN", MessageBoxButtons.OKCancel);
                         pivSession.ChangePin();
                         _currentPIN = _newPIN;
                         _newPIN = null;
@@ -429,8 +434,8 @@ namespace OnboardYK
             }
             catch
             {
-                UpdateStatusLabel("Failed to generate CSR", Color.Red);
-                MessageBox.Show("Failed to generate CSR", "Failed to generate CSR", MessageBoxButtons.OK);
+                UpdateStatusLabel("Certificate Authority did not approve of the certificate request.", Color.Red);
+                //MessageBox.Show("Failed to generate CSR", "Failed to generate CSR", MessageBoxButtons.OK);
                 return;
             }
             try
