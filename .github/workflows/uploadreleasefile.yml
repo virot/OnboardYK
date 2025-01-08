@@ -37,7 +37,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Install dependencies OnboardYK
-      run: dotnet restore
+      run: dotnet restore --runtime win-x64
 
     - name: Setup MSBuild Path
       uses: microsoft/setup-msbuild@v1.3
@@ -45,12 +45,12 @@ jobs:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
     - name: Build release
-      run: msbuild -property:DeployOnBuild=true -property:PublishProfile=FolderProfile  -property:RuntimeIdentifier=win-x64 -p:TargetFramework=net8.0-windows -property:Configuration=Release -property:PublishDir=..\release /t:publish
+      run: msbuild -property:DeployOnBuild=true -property:PublishProfile=FolderProfile  -property:RuntimeIdentifier=win-x64 -p:TargetFramework=net8.0-windows -property:Configuration=Release -p:SelfContained=true -target:publish
 
     - name: Create ZIP file
       run: |
         Add-Type -AssemblyName 'System.IO.Compression.FileSystem'
-        [System.IO.Compression.ZipFile]::CreateFromDirectory("release", "release.zip", [System.IO.Compression.CompressionLevel]::SmallestSize, $false)
+        [System.IO.Compression.ZipFile]::CreateFromDirectory("OnboardYK\bin\Release\net8.0-windows\publish", "release.zip", [System.IO.Compression.CompressionLevel]::SmallestSize, $false)
         Write-Host "ZIP file created successfully at $zipFilePath"
       shell: pwsh
 
