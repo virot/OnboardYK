@@ -23,7 +23,7 @@ jobs:
     - name: Set Asset Name
       id: set-asset-name
       run: |
-          echo "zipfilename=OnboardYK_${{ github.event.release.tag_name }}.zip" >> $GITHUB_ENV
+          echo "zipfilename=OnboardYK_${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
     - name: Trigger target workflow
       run: |
