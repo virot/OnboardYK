@@ -17,6 +17,12 @@ namespace OnboardYK.Models
         public bool ShowAllProfiles { get; set; } = false;
         [XmlElement(ElementName = "Profile")]
         public List<Profile>? Profiles { get; set; }
+        [XmlElement(ElementName = "RequireComplexPIN")]
+        public bool RequireComplexPIN { get; set; } = false;
+        [XmlElement(ElementName = "RequireBlockedPUK")]
+        public bool RequireBlockedPUK { get; set; } = false;
+        [XmlElement(ElementName = "RetriesPIN")]
+        public int RetriesPIN { get; set; } = 8;
 
         public class Profile
         {
@@ -98,7 +104,12 @@ namespace OnboardYK.Models
 
             using (StreamReader reader = new StreamReader(path))
             {
-                return (ProfileModel)xmlSerializer.Deserialize(reader.BaseStream);
+                var xmlData = xmlSerializer.Deserialize(reader.BaseStream);
+                if (xmlData is not null)
+                {
+                    return (ProfileModel)xmlData;
+                }
+                return new ProfileModel();
             }
         }
     }

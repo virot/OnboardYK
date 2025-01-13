@@ -22,4 +22,7 @@
     <CA>servername\CA Name</CA>
     <AlwaysVisible>false</AlwaysVisible>
   </Profile>
+  <RequireComplexPIN>true</RequireComplexPIN>
+  <RequireBlockedPUK>true</RequireBlockedPUK>
+  <RetriesPIN>8</RetriesPIN>
 </OnboardYK>
