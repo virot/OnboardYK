@@ -48,7 +48,7 @@ jobs:
       run: msbuild -property:DeployOnBuild=true -property:PublishProfile=FolderProfile  -property:RuntimeIdentifier=win-x64 -p:TargetFramework=net8.0-windows -property:Configuration=Release -p:SelfContained=true -target:publish
 
     - name: Build release dotnet core
-      run: msbuild -property:RuntimeIdentifier=win-x64 -p:TargetFramework=net8.0-windows -property:Configuration=Release -p:SelfContained=true -p:OutDir=..\small
+      run: msbuild -property:RuntimeIdentifier=win-x64 -p:TargetFramework=net8.0-windows -property:Configuration=Release -p:OutDir=..\small
 
     - name: Create ZIP file selfcontained
       run: |
