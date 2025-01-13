@@ -3,7 +3,6 @@ name: Manual release process
 on:
   release:
     types:
-      - published
       - prereleased
 
 permissions:
