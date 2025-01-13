@@ -72,7 +72,7 @@ jobs:
       id: set-asset-name
       run: |
         date=$(date +'%Y-%m-%d')
-        echo "zipfilename=OnboardYK_${date}.zip" >> $GITHUB_ENV
+        echo "zipfilename=OnboardYK_${date}" >> $GITHUB_ENV
 
     - name: Trigger target workflow
       run: |
