@@ -65,13 +65,14 @@ jobs:
         }' https://api.github.com/repos/${{ github.repository }}/releases)
         upload_url=$(echo $status | jq -r '.upload_url')
         echo "upload_url=$upload_url" >> $GITHUB_ENV
+        echo "release_id=$release_id" >> $GITHUB_ENV
         echo $status
 
     - name: Set Asset Name
       id: set-asset-name
       run: |
         date=$(date +'%Y-%m-%d')
-        echo "zipfilename=OnboardYK_${date}.zip" >> $GITHUB_ENV
+        echo "zipfilename=OnboardYK_${date}" >> $GITHUB_ENV
 
     - name: Trigger target workflow
       run: |
@@ -81,6 +82,20 @@ jobs:
         -d '{"ref":"main","inputs":{"upload_url":"${{ env.upload_url }}","zipfilename":"${{ env.zipfilename }}","versiontag":"${{ env.WF_NAME }}"}}'
       env:
         GH_TOKEN: ${{ github.token }}
+
+    - name: Update Release
+      if: ${{ steps.delete-release.outcome == 'success' || env.release_exists == 'false' }}
+      run: |
+        current_date=$(date +'%Y-%m-%d')
+        curl -s -X PATCH -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -d '{
+          "tag_name": "${{ env.WF_NAME }}",
+          "target_commitish": "main",
+          "name": "Updated build",
+          "body": "Updated auto-generated build on '"$current_date"'",
+          "draft": false,
+          "prerelease": true
+        }' https://api.github.com/repos/${{ github.repository }}/releases/${{ env.release_id }}
 
     - name: Complete the weekly build process
       run: echo "Latest build completed!"
