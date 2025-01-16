@@ -105,10 +105,9 @@ namespace OnboardYK
             // 
             toolStripStatusLabel1.AutoSize = false;
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Alignment = ToolStripItemAlignment.Left;
-            toolStripStatusLabel1.TextAlign = ContentAlignment.MiddleLeft;
             toolStripStatusLabel1.Size = new Size(350, 17);
             toolStripStatusLabel1.Text = "Select YubiKey and validate PIN to proceed";
+            toolStripStatusLabel1.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tabYubikey
             // 

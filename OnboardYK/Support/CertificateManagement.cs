@@ -5,6 +5,7 @@ using Yubico.YubiKey.Piv;
 using Yubico.YubiKey.Sample.PivSampleCode;
 using Yubico.YubiKey;
 using CERTCLILib;
+using Yubico.YubiKey.Piv.Objects;
 
 namespace OnboardYK.Support
 {
@@ -20,6 +21,16 @@ namespace OnboardYK.Support
             {
                 pivSession.KeyCollector = yKKeyCollector.YKKeyCollectorDelegate;
                 pivSession.ImportCertificate(slot, certificate);
+                CardholderUniqueId chuid = new CardholderUniqueId();
+                chuid.SetRandomGuid();
+                try
+                {
+                    pivSession.WriteObject(chuid);
+                }
+                catch
+                {
+                    throw new Exception("Failed to write CHUID");
+                }
             }
         }
         internal static string GenerateCertificateSigningRequest(byte slot, YubiKeyDevice yubiKeyDevice, YKKeyCollector yKKeyCollector)

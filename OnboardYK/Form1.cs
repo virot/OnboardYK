@@ -53,15 +53,6 @@ namespace OnboardYK
             unlockProfilesMenuItem.Visible = (Control.ModifierKeys & (Keys.Shift | Keys.Control)) == (Keys.Shift | Keys.Control);
         }
 
-        private void advancedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Do allow manual editing of the configuration
-            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-            {
-                MessageBox.Show("Going really advanced", "Advanced", MessageBoxButtons.OK);
-            }
-        }
-
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -190,6 +181,11 @@ namespace OnboardYK
             {
                 _currentPIN = new NetworkCredential("", textBoxCurrentPIN.Text).SecurePassword;
             }
+            else if (_profileModel.RequireComplexPIN == true && isPINComplex.TestPIN(_currentPIN))
+            {
+                UpdateStatusLabel("PIN not complex enough, try a new PIN", Color.Red);
+                return;
+            }
             else
             {
                 toolStripStatusLabel1.Text = "PIN must be between 6 and 8 characters";
@@ -215,10 +211,12 @@ namespace OnboardYK
                             int pinRetries = pivSession.GetMetadata(PivSlot.Pin).RetryCount;
                             int pukRetries = pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining;
                             textBoxPINPUKCount.Text = $"{pinRetries} / {pukRetries}";
+                            checkIfYubiKeyFollowsRules(this);
                         }
                         else
                         {
                             textBoxCurrentPIN.Text = "";
+                            UpdateStatusLabel("Incorrect PIN entered");
                             _currentPIN.Clear();
                         }
                     }
@@ -233,9 +231,26 @@ namespace OnboardYK
         {
             if ((e.TabPage == tabPage2 || e.TabPage == tabPage3) && _currentPIN is null)
             {
-                //e.Cancel = true; // Cancel the selection of tabPage2
+                e.Cancel = true; // Cancel the selection of tabPage2
                 UpdateStatusLabel("Please verify PIN before switching pages.");
+                return;
             }
+            if ((e.TabPage == tabPage3) && _profileModel.RequireComplexPIN && isPINComplex.TestPIN(_currentPIN) == false)
+            {
+                e.Cancel = true; // Cancel the selection of tabPage2
+                UpdateStatusLabel("Please update PIN before enrolling");
+                return;
+            }
+            using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
+            {
+                if ((e.TabPage == tabPage3) && _profileModel.RequireBlockedPUK && pivSession.GetMetadata(PivSlot.Puk).RetryCount != 0)
+                {
+                    e.Cancel = true; // Cancel the selection of tabPage2
+                    UpdateStatusLabel("Please block PUK before enrolling");
+                    return;
+                }
+            }
+
         }
 
         private void resetYubikeyPIVToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -284,6 +299,36 @@ namespace OnboardYK
                     int pukRetries = pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining;
                     textBoxPINPUKCount.Text = $"{pinRetries} / {pukRetries}";
                 }
+                checkIfYubiKeyFollowsRules(this);
+            }
+        }
+
+     
+
+        private void checkIfYubiKeyFollowsRules(Form form)
+        {
+            using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
+            {
+                pivSession.KeyCollector = _ykKeyCollector.YKKeyCollectorDelegate;
+
+                if (_profileModel.RequireComplexPIN == true && isPINComplex.TestPIN(_currentPIN) == false)
+                {
+                    UpdateStatusLabel("PIN not complex enough", Color.Red);
+                    return;
+                }
+                if (pivSession.GetMetadata(PivSlot.Pin).RetryCount != _profileModel.RetriesPIN)
+                {
+                    UpdateStatusLabel("PIN retries not 8, please correct", Color.Red);
+                    return;
+                }
+                if (_profileModel.RequireBlockedPUK && pivSession.GetMetadata(PivSlot.Pin).RetriesRemaining != 0)
+                {
+                    UpdateStatusLabel("PUK must be blocked, please correct", Color.Red);
+                    return;
+                }
+
+                UpdateStatusLabel("Proceed to enroll", null);
+
             }
         }
 
@@ -307,6 +352,7 @@ namespace OnboardYK
                         toolStripStatusLabel1.Text = "PIN changed";
                         textBoxPINNew.Text = "";
                         textBoxPINConfirm.Text = "";
+                        checkIfYubiKeyFollowsRules(this);
                     };
                 }
             }
@@ -415,6 +461,7 @@ namespace OnboardYK
             try
             {
                 UpdateStatusLabel("Please press YubiKey if it starts to blink", Color.Yellow);
+                Thread.Sleep(15);
                 csrPemData = CertificateManagement.GenerateCertificateSigningRequest(slot: slot, yubiKeyDevice: _yubiKeyDevice!, yKKeyCollector: _ykKeyCollector);
                 UpdateStatusLabel("Certificate Signing Request created", Control.DefaultBackColor);
             }
