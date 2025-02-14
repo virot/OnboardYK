@@ -220,7 +220,7 @@ namespace OnboardYK
             buttonChangePIN.Name = "buttonChangePIN";
             buttonChangePIN.Size = new Size(156, 23);
             buttonChangePIN.TabIndex = 8;
-            buttonChangePIN.Text = "Change PIN";
+            buttonChangePIN.Text = OnboardYK.Resources.Strings.tab2_button_changepin;
             buttonChangePIN.UseVisualStyleBackColor = true;
             buttonChangePIN.Click += buttonChangePIN_Click;
             // 
@@ -264,7 +264,7 @@ namespace OnboardYK
             labelPINConfirm.Name = "labelPINConfirm";
             labelPINConfirm.Size = new Size(76, 15);
             labelPINConfirm.TabIndex = 3;
-            labelPINConfirm.Text = "Confirm PIN:";
+            labelPINConfirm.Text = OnboardYK.Resources.Strings.tab2_label_confirmpin;
             // 
             // labelNewPIN
             // 
@@ -273,7 +273,7 @@ namespace OnboardYK
             labelNewPIN.Name = "labelNewPIN";
             labelNewPIN.Size = new Size(56, 15);
             labelNewPIN.TabIndex = 2;
-            labelNewPIN.Text = "New PIN:";
+            labelNewPIN.Text = OnboardYK.Resources.Strings.tab2_label_newpin;
             // 
             // label2
             // 
@@ -282,7 +282,7 @@ namespace OnboardYK
             label2.Name = "label2";
             label2.Size = new Size(38, 15);
             label2.TabIndex = 1;
-            label2.Text = "label2";
+            label2.Text = OnboardYK.Resources.Strings.tab2_status_awaiting;
             // 
             // labelPINGood
             // 
@@ -291,7 +291,7 @@ namespace OnboardYK
             labelPINGood.Name = "labelPINGood";
             labelPINGood.Size = new Size(38, 15);
             labelPINGood.TabIndex = 0;
-            labelPINGood.Text = "label1";
+            labelPINGood.Text = OnboardYK.Resources.Strings.tab2_label_Status;
             // 
             // tabPage3
             // 
@@ -361,13 +361,13 @@ namespace OnboardYK
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { quitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
-            fileToolStripMenuItem.Text = "&File";
+            fileToolStripMenuItem.Text = OnboardYK.Resources.Strings.menu_file;
             // 
             // quitToolStripMenuItem
             // 
             quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            quitToolStripMenuItem.Size = new Size(97, 22);
-            quitToolStripMenuItem.Text = "&Quit";
+            quitToolStripMenuItem.Size = new Size(180, 22);
+            quitToolStripMenuItem.Text = OnboardYK.Resources.Strings.menu_file_quit;
             quitToolStripMenuItem.Click += quitToolStripMenuItem_Click;
             // 
             // advancedMenuItem
@@ -375,21 +375,21 @@ namespace OnboardYK
             advancedMenuItem.DropDownItems.AddRange(new ToolStripItem[] { resetYubikeyPIVToolStripMenuItem1, unlockProfilesMenuItem });
             advancedMenuItem.Name = "advancedMenuItem";
             advancedMenuItem.Size = new Size(72, 20);
-            advancedMenuItem.Text = "&Advanced";
+            advancedMenuItem.Text = OnboardYK.Resources.Strings.menu_advanced;
             advancedMenuItem.DropDownOpening += advancedMenuItem_DropDownOpening;
             // 
             // resetYubikeyPIVToolStripMenuItem1
             // 
             resetYubikeyPIVToolStripMenuItem1.Name = "resetYubikeyPIVToolStripMenuItem1";
             resetYubikeyPIVToolStripMenuItem1.Size = new Size(167, 22);
-            resetYubikeyPIVToolStripMenuItem1.Text = "&Reset Yubikey PIV";
+            resetYubikeyPIVToolStripMenuItem1.Text = OnboardYK.Resources.Strings.menu_advanced_reset;
             resetYubikeyPIVToolStripMenuItem1.Click += resetYubikeyPIVToolStripMenuItem1_Click;
             // 
             // unlockProfilesMenuItem
             // 
             unlockProfilesMenuItem.Name = "unlockProfilesMenuItem";
             unlockProfilesMenuItem.Size = new Size(167, 22);
-            unlockProfilesMenuItem.Text = "&Unlock profiles";
+            unlockProfilesMenuItem.Text = OnboardYK.Resources.Strings.menu_advanced_show_profiles;
             unlockProfilesMenuItem.Click += unlockProfilesMenuItem_Click;
             // 
             // helpToolStripMenuItem
@@ -397,13 +397,13 @@ namespace OnboardYK
             helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutToolStripMenuItem });
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(44, 20);
-            helpToolStripMenuItem.Text = "&Help";
+            helpToolStripMenuItem.Text = OnboardYK.Resources.Strings.menu_help;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new Size(107, 22);
-            aboutToolStripMenuItem.Text = "&About";
+            aboutToolStripMenuItem.Text = OnboardYK.Resources.Strings.menu_help_about;
             // 
             // panel1
             // 

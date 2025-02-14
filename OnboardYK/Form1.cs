@@ -186,7 +186,7 @@ namespace OnboardYK
                 toolStripStatusLabel1.Text = "PIN must be between 6 and 8 characters";
                 return;
             }
-            
+
             if (_currentPIN is not null)
             {
                 try
@@ -219,7 +219,7 @@ namespace OnboardYK
                     else
                     {
                         textBoxCurrentPIN.Text = "";
-                        UpdateStatusLabel("Incorrect PIN entered");
+                        UpdateStatusLabel(OnboardYK.Resources.Strings.statusbar_pin_incorrect);
                         _currentPIN.Clear();
                     }
                 }
@@ -234,13 +234,13 @@ namespace OnboardYK
             if ((e.TabPage == tabPage2 || e.TabPage == tabPage3) && _currentPIN is null)
             {
                 e.Cancel = true; // Cancel the selection of tabPage2
-                UpdateStatusLabel("Please verify PIN before switching pages.");
+                UpdateStatusLabel(OnboardYK.Resources.Strings.statusbar_verifypin);
                 return;
             }
             if ((e.TabPage == tabPage3) && _profileModel.RequireComplexPIN && isPINComplex.TestPIN(_currentPIN) == false)
             {
                 e.Cancel = true; // Cancel the selection of tabPage2
-                UpdateStatusLabel("Please update PIN before enrolling");
+                UpdateStatusLabel(OnboardYK.Resources.Strings.statusbar_requirementnotmet);
                 return;
             }
             using (var pivSession = new PivSession((YubiKeyDevice)_yubiKeyDevice!))
@@ -248,7 +248,7 @@ namespace OnboardYK
                 if ((e.TabPage == tabPage3) && _profileModel.RequireBlockedPUK && pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining != 0)
                 {
                     e.Cancel = true; // Cancel the selection of tabPage2
-                    UpdateStatusLabel("Please block PUK before enrolling");
+                    UpdateStatusLabel(OnboardYK.Resources.Strings.statusbar_YubiKey_PUK_not_blocked);
                     return;
                 }
             }
@@ -269,9 +269,9 @@ namespace OnboardYK
                     }
                     textBoxCurrentPIN.Text = "";
                     textBoxCurrentPIN.Enabled = true;
-                    tabYubikey.SelectTab(tabPage1);
-
                 }
+                tabYubikey.SelectTab(tabPage1);
+                UpdateStatusLabel(OnboardYK.Resources.Strings.statusbar_select_yubikey_and_verify_pin, null);
             }
         }
 
@@ -305,7 +305,7 @@ namespace OnboardYK
             }
         }
 
-     
+
 
         private void checkIfYubiKeyFollowsRules(Form form)
         {
@@ -315,24 +315,24 @@ namespace OnboardYK
 
                 if (_profileModel.RequireComplexPIN == true && isPINComplex.TestPIN(_currentPIN) == false)
                 {
-                    UpdateStatusLabel("PIN not complex enough", Color.Red);
-                    label2.Text = "PIN not complex enough, please change";
+                    UpdateStatusLabel(OnboardYK.Resources.Strings.tab2_status_pin_complexity_not_meet, Color.Red);
+                    label2.Text = OnboardYK.Resources.Strings.tab2_status_pin_complexity_not_meet;
                     return;
                 }
                 if (pivSession.GetMetadata(PivSlot.Pin).RetryCount != _profileModel.RetriesPIN)
                 {
-                    UpdateStatusLabel("PIN retries not 8, please correct", Color.Red);
-                    label2.Text = "Please update number of possible retires";
+                    UpdateStatusLabel(OnboardYK.Resources.Strings.tab2_status_pin_retry_count, Color.Red);
+                    label2.Text = OnboardYK.Resources.Strings.tab2_status_pin_retry_count;
                     return;
                 }
                 if (_profileModel.RequireBlockedPUK && pivSession.GetMetadata(PivSlot.Puk).RetriesRemaining != 0)
                 {
-                    UpdateStatusLabel("PUK must be blocked, please correct", Color.Red);
-                    label2.Text = "PUK is not blocked, please block PUK.";
+                    UpdateStatusLabel(OnboardYK.Resources.Strings.tab2_status_puk_not_blocked, Color.Red);
+                    label2.Text = OnboardYK.Resources.Strings.tab2_status_puk_not_blocked;
                     return;
                 }
 
-                label2.Text = "YubiKey is following requirements";
+                label2.Text = OnboardYK.Resources.Strings.tab2_status_meets_requirements;
                 UpdateStatusLabel("Proceed to enroll", null);
 
             }
@@ -503,5 +503,6 @@ namespace OnboardYK
                 return;
             }
         }
+
     }
 }

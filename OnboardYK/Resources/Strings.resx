@@ -117,14 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>417, 17</value>
+  <data name="menu_advanced" xml:space="preserve">
+    <value>&amp;Advanced</value>
   </data>
-  <data name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>532, 17</value>
+  <data name="menu_advanced_reset" xml:space="preserve">
+    <value>&amp;Reset YubiKey PIV</value>
   </data>
-  <data name="profileModelBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>647, 17</value>
+  <data name="menu_advanced_show_profiles" xml:space="preserve">
+    <value>&amp;Show profiles</value>
+  </data>
+  <data name="menu_file" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="menu_file_quit" xml:space="preserve">
+    <value>&amp;Quit</value>
+  </data>
+  <data name="menu_help" xml:space="preserve">
+    <value>&amp;Help</value>
+  </data>
+  <data name="menu_help_about" xml:space="preserve">
+    <value>&amp;About</value>
+  </data>
+  <data name="statusbar_pin_incorrect" xml:space="preserve">
+    <value>Incorrect PIN entered.</value>
+  </data>
+  <data name="statusbar_requirementnotmet" xml:space="preserve">
+    <value>YubiKey does not conform to requirements. Please correct.</value>
+  </data>
+  <data name="statusbar_select_yubikey_and_verify_pin" xml:space="preserve">
+    <value>Select YubiKey and verify PIN to continue.</value>
+  </data>
+  <data name="statusbar_verifypin" xml:space="preserve">
+    <value>Please verify PIN before switching tabs.</value>
+  </data>
+  <data name="statusbar_YubiKey_PUK_not_blocked" xml:space="preserve">
+    <value>YubiKey PUK is not blocked, please block to proceed</value>
+  </data>
+  <data name="tab2_button_changepin" xml:space="preserve">
+    <value>Change PIN</value>
+  </data>
+  <data name="tab2_label_confirmpin" xml:space="preserve">
+    <value>Confirm PIN:</value>
+  </data>
+  <data name="tab2_label_newpin" xml:space="preserve">
+    <value>New PIN:</value>
+  </data>
+  <data name="tab2_label_Status" xml:space="preserve">
+    <value>Compliance</value>
+  </data>
+  <data name="tab2_status_awaiting" xml:space="preserve">
+    <value>Awaiting update</value>
+  </data>
+  <data name="tab2_status_meets_requirements" xml:space="preserve">
+    <value>YubiKey is meets tequirements.</value>
+  </data>
+  <data name="tab2_status_pin_complexity_not_meet" xml:space="preserve">
+    <value>PIN not complex enough, please change</value>
+  </data>
+  <data name="tab2_status_pin_retry_count" xml:space="preserve">
+    <value>Please update number of possible PIN retires.</value>
+  </data>
+  <data name="tab2_status_puk_not_blocked" xml:space="preserve">
+    <value>PUK is not blocked, please block PUK.</value>
   </data>
 </root>
